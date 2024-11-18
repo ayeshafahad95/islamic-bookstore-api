@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
+interface Book {
+  id: number;
+  title: string;
+  author: string;
+  image: string;
+  pdfLink: string;
+}
 
-let books = [
+const books: Book[] = [
   {
     id: 1,
     title: "Sahih al-Bukhari",
@@ -42,10 +49,10 @@ let books = [
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
-) {
+): Promise<Response> {
   try {
     const bookId = parseInt(params.id, 10);
-    const body = await request.json();
+    const body: Partial<Book> = await request.json();
 
     const bookIndex = books.findIndex((book) => book.id === bookId);
     if (bookIndex === -1) {
@@ -63,7 +70,7 @@ export async function PUT(
 export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
-) {
+):Promise<Response> {
   try {
     const bookId = parseInt(params.id, 10);
     const bookIndex = books.findIndex((book) => book.id === bookId);

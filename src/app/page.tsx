@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-
+import Image from "next/image";
 
 interface Book {
   id: number;
@@ -8,6 +8,23 @@ interface Book {
   author: string;
   image: string;
   pdfLink: string;
+}
+
+
+function BookCard({ book }: { book: Book }) {
+  return (
+    <div className="book-card">
+      <Image
+        src={book.image}
+        alt={book.title}
+        width={400}
+        height={300}
+        className="rounded-lg mb-4"
+      />
+      <h2 className="text-xl font-bold">{book.title}</h2>
+      <p className="text-gray-600">{book.author}</p>
+    </div>
+  );
 }
 
 export default function BooksPage() {

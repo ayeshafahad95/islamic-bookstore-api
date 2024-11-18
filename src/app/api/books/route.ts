@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
+interface Book {
+  id: number;
+  title: string;
+  author: string;
+  image: string;
+  pdfLink: string;
+}
 
-let books = [
+const books: Book[] = [
   {
     id: 1,
     title: "Sahih al-Bukhari",
@@ -48,9 +55,9 @@ export async function GET() {
 }
 
 // POST: Add a new book
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<Response> {
   try {
-    const body = await request.json();
+    const body: Partial<Book> = await request.json();
     
     // Ensure all necessary fields are provided
     const { title, author, image, pdfLink } = body;

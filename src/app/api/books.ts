@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 // Mock data store
-let books: Array<{ id: number; title: string; author: string; image: string; pdfLink: string }> = [];
+const books: Array<{ id: number; title: string; author: string; image: string; pdfLink: string }> = [];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
@@ -27,7 +27,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     res.status(201).json(newBook);
   } else if (req.method === 'DELETE') {
     const { id } = req.body;
-    books = books.filter((book) => book.id !== id);
+
+    // Modify the contents of `books` without reassigning
+    const index = books.findIndex((book) => book.id === id);
+    if (index !== -1) {
+      books.splice(index, 1); // Remove the book at the found index
+    }
+
     res.status(204).end();
   } else {
     res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
