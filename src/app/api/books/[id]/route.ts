@@ -47,20 +47,16 @@ const books: Book[] = [
 ];
 
 // PUT: Update a book
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  const bookId = parseInt(params.id, 10);
+  if (isNaN(bookId)) {
+    return NextResponse.json({ error: "Invalid book ID." }, { status: 400 });
+  }
+
   try {
-    const bookId = parseInt(id, 10);
-    if (isNaN(bookId)) {
-      return NextResponse.json({ error: "Invalid book ID." }, { status: 400 });
-    }
-
     const body: Partial<Book> = await request.json();
-
     const bookIndex = books.findIndex((book) => book.id === bookId);
+
     if (bookIndex === -1) {
       return NextResponse.json({ error: "Book not found." }, { status: 404 });
     }
@@ -76,17 +72,13 @@ export async function PUT(
 }
 
 // DELETE: Remove a book
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
-  try {
-    const bookId = parseInt(id, 10);
-    if (isNaN(bookId)) {
-      return NextResponse.json({ error: "Invalid book ID." }, { status: 400 });
-    }
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  const bookId = parseInt(params.id, 10);
+  if (isNaN(bookId)) {
+    return NextResponse.json({ error: "Invalid book ID." }, { status: 400 });
+  }
 
+  try {
     const bookIndex = books.findIndex((book) => book.id === bookId);
 
     if (bookIndex === -1) {
