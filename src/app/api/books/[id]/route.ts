@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
 interface Book {
   id: number;
   title: string;
@@ -47,11 +48,16 @@ const books: Book[] = [
 
 // PUT: Update a book
 export async function PUT(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
-): Promise<Response> {
+) {
+  const { id } = params;
   try {
-    const bookId = parseInt(params.id, 10);
+    const bookId = parseInt(id, 10);
+    if (isNaN(bookId)) {
+      return NextResponse.json({ error: "Invalid book ID." }, { status: 400 });
+    }
+
     const body: Partial<Book> = await request.json();
 
     const bookIndex = books.findIndex((book) => book.id === bookId);
@@ -59,29 +65,40 @@ export async function PUT(
       return NextResponse.json({ error: "Book not found." }, { status: 404 });
     }
 
+    // Update book details
     books[bookIndex] = { ...books[bookIndex], ...body };
+
     return NextResponse.json(books[bookIndex], { status: 200 });
   } catch (error) {
+    console.error("Error updating book:", error);
     return NextResponse.json({ error: "Failed to update book." }, { status: 500 });
   }
 }
 
 // DELETE: Remove a book
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
-):Promise<Response> {
+) {
+  const { id } = params;
   try {
-    const bookId = parseInt(params.id, 10);
+    const bookId = parseInt(id, 10);
+    if (isNaN(bookId)) {
+      return NextResponse.json({ error: "Invalid book ID." }, { status: 400 });
+    }
+
     const bookIndex = books.findIndex((book) => book.id === bookId);
 
     if (bookIndex === -1) {
       return NextResponse.json({ error: "Book not found." }, { status: 404 });
     }
 
-    const deletedBook = books.splice(bookIndex, 1);
-    return NextResponse.json(deletedBook[0], { status: 200 });
+    // Remove the book
+    const [deletedBook] = books.splice(bookIndex, 1);
+
+    return NextResponse.json(deletedBook, { status: 200 });
   } catch (error) {
+    console.error("Error deleting book:", error);
     return NextResponse.json({ error: "Failed to delete book." }, { status: 500 });
   }
 }
